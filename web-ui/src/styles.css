@@ -1,0 +1,25 @@
+/* You can add global styles to this file, and also import other style files */
+
+body{
+  background-color: var(--surface-ground) !important;
+}
+
+.navbar{
+  background-color: rgb(59, 130, 246) !important;
+}
+
+
+ .layout-content {
+  margin-top: 2em;
+    margin-bottom: 1em;
+  flex-grow: 1;
+  display: flex;
+  flex-direction: column;
+}
+
+ .card {
+  background: var(--surface-card);
+  padding: 2rem;
+  border-radius: 10px;
+  margin-bottom: 2rem;
+}

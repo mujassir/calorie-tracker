@@ -1,0 +1,65 @@
+<div class="layout-content">
+  <div class="layout-content-inner h-full">
+    <div class="content-section introduction">
+      <div class="feature-intro">
+        <h1>Report Summary</h1>
+        <p>
+          Simple calorie tracking app that would allow you to enter your food
+          entries along with the number of calories for each food entry. If will
+          help you keep track your calorie in take and warn on exceeding the set
+          limit.
+        </p>
+      </div>
+    </div>
+  </div>
+</div>
+
+<div class="content-section implementation">
+  <div class="row" *ngIf="state.reportSummary$ | async as data">
+    <div class="col-4">
+      <p-card header="Entries in Past Week" >
+        <h1>{{ data.entriesLastWeek }}</h1>
+      </p-card>
+    </div>
+
+    <div class="col-4">
+      <p-card header="Entries in Previous Week">
+        <h1>{{ data.entriesWeekBeforeLastWeek }}</h1>
+      </p-card>
+    </div>
+
+    <div class="col-4">
+      <p-card header="Average Calories">
+        <h1>
+          {{ data.averageCalroies | number: '1.2-2' }}
+
+        </h1>
+      </p-card>
+    </div>
+  </div>
+  <!-- <div class="row" *ngIf="state.reportSummary$ | async as data">
+    <div class="col-4">
+      <p-card header="{{ data.entriesLastWeek }}">
+        Total number of added entries in the last 7 days
+      </p-card>
+    </div>
+
+    <div class="col-4">
+      <p-card header="{{ data.entriesWeekBeforeLastWeek }}">
+        Total number of added entries the week before last week
+      </p-card>
+    </div>
+
+    <div class="col-4">
+      <p-card header="{{ data.averageCalroies | number: '1.2-2' }}">
+        The average number of calories added per user for the last 7 days
+      </p-card>
+    </div>
+  </div> -->
+
+    <div class="card align-center mt-2">
+      <p-chart type="pie" [data]="chartData"  [style]="{'width': '40%', 'height': '30vm'}"></p-chart>
+    </div>
+
+
+</div>

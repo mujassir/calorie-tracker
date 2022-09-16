@@ -1,0 +1,195 @@
+<div class="layout-content">
+  <div class="layout-content-inner h-full">
+    <div class="content-section introduction">
+      <div class="feature-intro">
+        <h1>My Food Entries</h1>
+        <p>
+          Simple calorie tracking app that would allow you to enter your food
+          entries help you keep track your calorie in take and warn on exceeding the set
+          limit.
+        </p>
+      </div>
+    </div>
+  </div>
+</div>
+
+<div class="content-section implementation">
+  <div class="row">
+    <div class="col-4">
+      <p-card header="Today's Calories" >
+        <h1>{{ todayCalories | number: "1.2-2" }}</h1>
+      </p-card>
+    </div>
+    <div class="col-4">
+      <p-card header="Daily Threshold" >
+        <h1>{{ dailyCalorieLimit | number: "1.2-2" }}</h1>
+      </p-card>
+    </div>
+    <div class="col-4">
+      <p-card  header="Yet to Consume">
+        <h1>{{ yetToConsume | number: "1.2-2" }}</h1>
+
+      <!-- <p-chart type="pie" [data]="chartData" [style]="{ 'height': '10vm'}"></p-chart> -->
+
+      </p-card>
+    </div>
+  </div>
+  <div class="card mt-2">
+    <div>
+      <table class="table">
+        <thead>
+          <tr>
+            <th scope="col">Name</th>
+            <th scope="col">Unit</th>
+            <th scope="col">Qty</th>
+            <th scope="col">Unit Calorie</th>
+            <th scope="col">Total Calories</th>
+            <th scope="col">Taken At</th>
+            <th scope="col col-action-buttons">
+              <div class="text-right">
+                <button
+                  type="button"
+                  class="btn btn-primary"
+                  data-toggle="modal"
+                  data-target="#exampleModal"
+                  (click)="addNew()"
+                >
+                  Add New
+                </button>
+              </div>
+            </th>
+          </tr>
+        </thead>
+        <tbody>
+          <ng-container *ngFor="let item of state.records$ | async">
+            <tr>
+              <td>
+                <i *ngIf="isTodayEntry(item)" class="pi pi-circle-fill"></i>
+                {{ item.name }}
+              </td>
+
+              <td>{{ item.unit }}</td>
+              <td>{{ item.quantity }}</td>
+              <td>{{ item.unitCalorieValue }}</td>
+              <td>{{ item.totalCalories }}</td>
+              <td>{{ convertUtcToLocalDate(item.foodTakenAt) }}</td>
+              <td>
+                <div class="action-icons d-block">
+                  <i
+                    class="fa fa-solid fa-pencil"
+                    title="Edit"
+                    (click)="edit(item)"
+                  ></i>
+                  <i
+                    class="fa fa-trash-can"
+                    title="Delete"
+                    (click)="delete(item.id)"
+                  ></i>
+                </div>
+              </td>
+            </tr>
+          </ng-container>
+        </tbody>
+      </table>
+    </div>
+  </div>
+</div>
+
+<p-dialog
+  header="Food Details"
+  [modal]="true"
+  [style]="{ width: '40vw' }"
+  [(visible)]="visibility.foodDetailDialog"
+>
+  <ng-container *ngIf="visibility.foodDetailDialog">
+    <form *ngIf="this.state.formState$ | async as vm" [ngrxFormState]="vm">
+      <div class="grid p-fluid">
+      </div>
+      <div class="grid p-fluid">
+        <div class="col-12 md:col-3">
+          <label>Name</label>
+        </div>
+        <div class="col-12 md:col-9">
+          <p-autoComplete
+            [placeholder]="'Search Food'"
+            [ngrxFormControlState]="vm.controls.name"
+            [suggestions]="results"
+            (completeMethod)="search($event)"
+            (onSelect)="foodSelected($event)"
+          ></p-autoComplete>
+        </div>
+      </div>
+      <div class="grid p-fluid">
+        <div class="col-6">
+          <label>Serving Unit</label>
+          <input
+            type="text"
+            pInputText
+            [ngrxFormControlState]="vm.controls.unit"
+          />
+        </div>
+        <div class="col-6">
+          <label>Calories Per Unit</label>
+          <p-inputNumber
+            mode="decimal"
+            [minFractionDigits]="2"
+            [ngrxFormControlState]="vm.controls.unitCalorieValue"
+          ></p-inputNumber>
+        </div>
+      </div>
+
+      <div class="grid p-fluid">
+        <div class="col-6">
+          <label>Quantity</label>
+          <p-inputNumber
+            mode="decimal"
+            [minFractionDigits]="2"
+            [ngrxFormControlState]="vm.controls.quantity"
+          ></p-inputNumber>
+        </div>
+        <div class="col-6">
+          <label>Total Calories</label>
+          <p-inputNumber
+            mode="decimal"
+            [minFractionDigits]="2"
+            [ngrxFormControlState]="vm.controls.totalCalories"
+          ></p-inputNumber>
+        </div>
+      </div>
+
+      <div class="grid p-fluid">
+        <div class="col-6">
+          <label>Date/Time</label>
+        </div>
+        <div class="col-6">
+          <p-calendar
+            [ngrxFormControlState]="vm.controls.foodTakenAt"
+            [ngrxValueConverter]="dateValueConverter"
+            [showTime]="true"
+            [hourFormat]="'12'"
+          ></p-calendar>
+          <!-- -->
+        </div>
+      </div>
+    </form>
+  </ng-container>
+  <ng-template pTemplate="footer">
+    <button
+      pButton
+      pRipple
+      type="button"
+      label="Close"
+      icon="pi pi-times"
+      class="p-button-secondary p-button-text"
+      (click)="toggleDialog()"
+    ></button>
+    <p-button label="Save" icon="pi pi-check" (click)="save()"></p-button>
+  </ng-template>
+</p-dialog>
+
+<p-confirmDialog
+  [style]="{ width: '30vw' }"
+  [baseZIndex]="10000"
+  rejectButtonStyleClass="p-button-text"
+></p-confirmDialog>
+<p-toast></p-toast>

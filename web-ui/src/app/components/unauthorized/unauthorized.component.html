@@ -1,0 +1,14 @@
+
+
+
+<main class="container mb-5">
+  <div class="bg-light p-5 rounded mt-3">
+    <h1>Unauthorized Access</h1>
+    <h3 class="mt-4">Hello, {{ currentUser.fullName  }} </h3>
+    <p>You might have accessed a resource, you are not authorized to.</p>
+
+    <div class="col text-right">
+      <a  [routerLink]="['/food-entry']">Back to Manage Food Entries</a>
+    </div>
+  </div>
+</main>
